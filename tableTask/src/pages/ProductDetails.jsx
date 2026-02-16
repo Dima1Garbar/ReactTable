@@ -17,10 +17,21 @@ export default function ProductDetails() {
 
   return (
     <div>
-      {product && Object.entries(product).map(([key, value]) => (
-            key === "id" ? null :
-                <p key={key}>{value}</p>            
-            ))}
+     {product && Object.keys(product).map((key) => (
+                            <p key={key}>
+                              {key === "id"
+                                  ? null
+                                  : key.startsWith("car_")
+                                  ? key.split("_")[1].charAt(0).toUpperCase() + key.split("_")[1].slice(1) + ": " + product[key]
+                                  : key.includes("_")
+                                  ? key
+                                      .split("_")
+                                      .map((s) => s.charAt(0).toUpperCase() + s.slice(1))
+                                      .join(" ")
+                                      + ": " + product[key]
+                                  : key.charAt(0).toUpperCase() + key.slice(1) + ": " + product[key]}
+                            </p>
+                        ))}
     </div>
   );
 }

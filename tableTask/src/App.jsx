@@ -2,17 +2,17 @@ import { useEffect, useState } from 'react';
 import Table from './comps/Table';
 import Pagination from './comps/Pagination';
 import Filters from './comps/Filters';
+import 'antd/dist/reset.css';
+
 
 function App() {
-  const tableList = {
-    "id": "Number",
-    "car_make": "Make",
-    "car_model": "Model",
-    "car_year": "Year",
-    "price": "Price",
-    "fuel_type": "Fuel Type",
-    "transmission": "Transmission"
-  };
+  const [selectedColumns, setSelectedColumns]  = useState({
+    "id": true,
+    "car_make": true,
+    "car_year": true,
+  });
+
+  const [allColumns, setAllColumns] = useState([]);
 
   const [products, setProducts] = useState([]); 
 
@@ -23,7 +23,7 @@ function App() {
   const [limitValues, setLimitValues] = useState(10);
 
   const [totalPages, setTotalPages] = useState(0); 
-
+  
   const [filters, setFilters] = useState({
     car_model_like: "",
     transmission: "",
@@ -66,18 +66,14 @@ function App() {
     const total = response.headers.get('X-Total-Count');
     setTotalPages(Math.ceil(Number(total) / limitValues));
     const filteredData = [];
-    for (const item of data) {
-      const values = {
-        id: item.id,
-        car_make: item.car_make,
-        car_model: item.car_model,
-        car_year: item.car_year,
-        price: item.price,
-        fuel_type: item.fuel_type,
-        transmission: item.transmission,
-      };  
-      filteredData.push(values);
+    for (let row of data){
+      let rowData = {};
+      for (let value of Object.keys(selectedColumns)){
+        rowData[value] = row[value];
+      }
+      filteredData.push(rowData);
     }
+    setAllColumns(Object.keys(data[0]));
     setProducts(filteredData);
   }
 
@@ -98,9 +94,21 @@ function App() {
     setCurrentPage(1);
   }
 
+  function onSelectedColumnsChange(column, value){
+    if (value){
+      setSelectedColumns(prev => ({...prev, [column]: value}));
+    }
+    else{
+      setSelectedColumns(prev => {
+      const { [column]: removed, ...rest } = prev;
+      return rest;
+    });
+    }
+  }
+
   useEffect(() => {
       productsList()
-    }, [sortColumn, sortOrder, limitValues, currentPage, filters]);
+    }, [sortColumn, sortOrder, limitValues, currentPage, filters, selectedColumns]);
 
 
   return (
@@ -118,8 +126,10 @@ function App() {
         onSort={handleSort} 
         sortColumn={sortColumn} 
         sortOrder={sortOrder} 
-        tableList={tableList}
-        />
+        selectedColumns={selectedColumns}
+        allColumns={allColumns}
+        onSelectedColumnsChange={onSelectedColumnsChange}
+      />
      <Pagination 
         pageLimit={limitValues}
         currentPage={currentPage}
