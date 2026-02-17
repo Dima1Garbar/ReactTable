@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import Table from './comps/Table';
 import Pagination from './comps/Pagination';
 import Filters from './comps/Filters';
-import 'antd/dist/reset.css';
+import "./styles/app.css"
 
 
 function App() {
@@ -64,7 +64,7 @@ function App() {
     const response = await fetch(`http://localhost:3001/products?${params.toString()}`);
     const data = await response.json();
     const total = response.headers.get('X-Total-Count');
-    setTotalPages(Math.ceil(Number(total) / limitValues));
+    setTotalPages(Math.ceil(Number(total)));
     const filteredData = [];
     for (let row of data){
       let rowData = {};
@@ -113,7 +113,7 @@ function App() {
 
   return (
     <div>
-      <h1>Car Products</h1>
+      <h1 className='table-head'>Car Products</h1>
       <Pagination 
         pageLimit={limitValues}
         currentPage={currentPage}
@@ -121,15 +121,16 @@ function App() {
         onPageChange={onPageChange}
       />
       <Filters filters={filters} onFilterChange={handleFilterChange} />      
-      <Table 
-        products={products} 
-        onSort={handleSort} 
-        sortColumn={sortColumn} 
-        sortOrder={sortOrder} 
+      <Table
+        products={products}
         selectedColumns={selectedColumns}
         allColumns={allColumns}
         onSelectedColumnsChange={onSelectedColumnsChange}
+        sortColumn={sortColumn}
+        sortOrder={sortOrder}
+        onSort={handleSort}
       />
+
      <Pagination 
         pageLimit={limitValues}
         currentPage={currentPage}

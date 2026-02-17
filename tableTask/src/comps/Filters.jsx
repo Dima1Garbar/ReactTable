@@ -1,42 +1,64 @@
+import { Input, Select, InputNumber, Space } from "antd";
+
 function Filters({ filters, onFilterChange }) {
 
   return (
-    <div >
-      <input
-        type="text"
+    <Space className="filters">
+
+      {/* Search */}
+      <Input
         placeholder="Search title..."
         value={filters.car_model_like}
-        onChange={(e) => onFilterChange("car_model_like", e.target.value)}
+        onChange={(e) =>
+          onFilterChange("car_model_like", e.target.value)
+        }
       />
-      <select
-        value={filters.transmission}
-        onChange={(e) => onFilterChange("transmission", e.target.value)}
-      >
-        <option value="">All categories</option>
-        <option value="Automatic">Automatic</option>
-        <option value="Manual">Manual</option>
-      </select>
-       <select
-        value={filters.fuel_type}
-        onChange={(e) => onFilterChange("fuel_type", e.target.value)}
-      >
-        <option value="">All categories</option>
-        <option value="Diesel">Diesel</option>
-        <option value="Gasoline">Gasoline</option>
-      </select>
-      <input
-        type="number"
+
+      {/* Transmission */}
+      <Select
+        value={filters.transmission || undefined}
+        placeholder="Transmission"
+        onChange={(value) =>
+          onFilterChange("transmission", value)
+        }
+        options={[
+          { value: "Automatic", label: "Automatic" },
+          { value: "Manual", label: "Manual" },
+        ]}
+      />
+
+      {/* Fuel */}
+      <Select
+        value={filters.fuel_type || undefined}
+        placeholder="Fuel type"
+        onChange={(value) =>
+          onFilterChange("fuel_type", value)
+        }
+        options={[
+          { value: "Diesel", label: "Diesel" },
+          { value: "Gasoline", label: "Gasoline" },
+        ]}
+      />
+
+      {/* Min price */}
+      <InputNumber
         placeholder="Min price"
-        value={filters.price_gte}
-        onChange={(e) => onFilterChange("price_gte", e.target.value)}
+        value={filters.price_gte || null}
+        onChange={(value) =>
+          onFilterChange("price_gte", value)
+        }
       />
-      <input
-        type="number"
+
+      {/* Max price */}
+      <InputNumber
         placeholder="Max price"
-        value={filters.price_lte}
-        onChange={(e) => onFilterChange("price_lte", e.target.value)}
+        value={filters.price_lte || null}
+        onChange={(value) =>
+          onFilterChange("price_lte", value)
+        }
       />
-    </div>
+
+    </Space>
   );
 }
 
