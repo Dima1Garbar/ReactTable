@@ -1,29 +1,21 @@
 import { useEffect, useState } from 'react';
-import Table from './comps/Table';
 import Pagination from './comps/Pagination';
 import Filters from './comps/Filters';
+import Table from './comps/Table';
+
 
 function App() {
-  const tableList = {
-    "id": "Number",
-    "car_make": "Make",
-    "car_model": "Model",
-    "car_year": "Year",
-    "price": "Price",
-    "fuel_type": "Fuel Type",
-    "transmission": "Transmission"
-  };
 
+  const [selectedCheckBoxes, setSelectedCheckBoxes] = useState({})
+  const [allColumns, setAllColumns] = useState([]);
   const [products, setProducts] = useState([]); 
-
-  const [sortColumn, setSortColumn] = useState("");
-  const [sortOrder, setSortOrder] = useState("asc");
-  
+  const [sort, setSort] = useState({
+    column: "",
+    order: "asc",
+  });
   const [currentPage, setCurrentPage] = useState(1);
   const [limitValues, setLimitValues] = useState(10);
-
-  const [totalPages, setTotalPages] = useState(0); 
-
+  const [totalPages, setTotalPages] = useState(0);   
   const [filters, setFilters] = useState({
     car_model_like: "",
     transmission: "",
@@ -31,17 +23,32 @@ function App() {
     price_gte: "",
     price_lte: "",
   });
+  const [selectedColumns, setSelectedColumns]  = useState({
+    "id": true,
+    "car_make": true,
+    "car_model": true,
+    "car_year": true,
+    "price": true,
+  });
 
-// choose type of sort  ↑' or ' ↓'
-  function handleSort (column){
-      if (sortColumn === column){
-          setSortOrder(prev => (prev === "asc" ? "desc" : "asc"));
+
+  // choose type of sort  ↑' or ' ↓'
+  function handleSort(column) {
+    setSort(prev => {
+      if (prev.column === column) {
+        return {
+          ...prev,
+          order: prev.order === "asc" ? "desc" : "asc",
+        };
       }
-      else{
-          setSortColumn(column);
-          setSortOrder("asc");
-      }
+      return {
+        column,
+        order: "asc",
+      };
+    });
   }
+
+
 
   // get data from REST API
   async function productsList(){
@@ -50,11 +57,11 @@ function App() {
       _limit: limitValues,
     });
     //add additional parameters to url
-    if (sortColumn) {
-        params.set('_sort', sortColumn);
-        params.set('_order', sortOrder);
+    if (sort.column) {
+        params.set('_sort', sort.column);
+        params.set('_order', sort.order);
       }
-
+    //add additional filters
     Object.entries(filters).forEach(([key, value]) => {
       if (value){
         params.set(key, value);
@@ -64,20 +71,17 @@ function App() {
     const response = await fetch(`http://localhost:3001/products?${params.toString()}`);
     const data = await response.json();
     const total = response.headers.get('X-Total-Count');
-    setTotalPages(Math.ceil(Number(total) / limitValues));
+    setTotalPages(Math.ceil(Number(total)/limitValues));
+    // add columns that are selected 
     const filteredData = [];
-    for (const item of data) {
-      const values = {
-        id: item.id,
-        car_make: item.car_make,
-        car_model: item.car_model,
-        car_year: item.car_year,
-        price: item.price,
-        fuel_type: item.fuel_type,
-        transmission: item.transmission,
-      };  
-      filteredData.push(values);
+    for (let row of data){
+      let rowData = {};
+      for (let value of Object.keys(selectedColumns)){
+        rowData[value] = row[value];
+      }
+      filteredData.push(rowData);
     }
+    setAllColumns(Object.keys(data[0]));
     setProducts(filteredData);
   }
 
@@ -98,35 +102,65 @@ function App() {
     setCurrentPage(1);
   }
 
+  // add or remove selected columns on table
+  function onSelectedColumnsChange(column, value){
+    if (value){
+      setSelectedColumns(prev => ({...prev, [column]: value}));
+    }
+    else{
+        setSelectedColumns(prev => {
+          const { [column]: removed, ...rest } = prev;
+          return rest;
+      });
+    }
+  }
+  // add or remove selected checkboxes
+  function onSelectedCheckBoxesChange(id){
+    setSelectedCheckBoxes(prev => ({
+      ...prev,
+      [id]: !prev[id],
+    }));
+  }
+
   useEffect(() => {
       productsList()
-    }, [sortColumn, sortOrder, limitValues, currentPage, filters]);
+    }, [sort, limitValues, currentPage, filters, selectedColumns]);
 
 
   return (
-    <div>
-      <h1>Car Products</h1>
+    <main className='content'>
+      <h1 className='content-head'>Car Products</h1>
       <Pagination 
         pageLimit={limitValues}
         currentPage={currentPage}
         totalPages={totalPages}
         onPageChange={onPageChange}
       />
-      <Filters filters={filters} onFilterChange={handleFilterChange} />      
-      <Table 
-        products={products} 
-        onSort={handleSort} 
-        sortColumn={sortColumn} 
-        sortOrder={sortOrder} 
-        tableList={tableList}
-        />
+      <Filters 
+        filters={filters}
+        onFilterChange={handleFilterChange}
+        allColumns={allColumns}
+        onSelectedColumnsChange={onSelectedColumnsChange}
+        selectedColumns={selectedColumns}
+
+ />      
+      <Table
+        products={products}
+        selectedColumns={selectedColumns}
+        sortColumn={sort.column}
+        sortOrder={sort.order}
+        onSort={handleSort}
+        selectedCheckBoxes={selectedCheckBoxes}
+        onSelectedCheckBoxesChange={onSelectedCheckBoxesChange}
+      />
+
      <Pagination 
         pageLimit={limitValues}
         currentPage={currentPage}
         totalPages={totalPages}
         onPageChange={onPageChange}
       />
-    </div>
+    </main>
   );
 }
 

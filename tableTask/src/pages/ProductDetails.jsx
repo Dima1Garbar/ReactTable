@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 
 export default function ProductDetails() {
@@ -16,11 +16,27 @@ export default function ProductDetails() {
   }, [id]);
 
   return (
-    <div>
-      {product && Object.entries(product).map(([key, value]) => (
-            key === "id" ? null :
-                <p key={key}>{value}</p>            
-            ))}
-    </div>
+    <section className="details">
+      <h1 className="details-title">Product Details</h1>
+     {product && Object.keys(product).map((key) => (
+      key === "id" ? null : (
+      <p className="details__row"
+        key={key}>
+        {key.startsWith("car_")
+            ? key.split("_")[1].charAt(0).toUpperCase() + key.split("_")[1].slice(1) + ": " + product[key]
+            : key.includes("_")
+            ? key
+                .split("_")
+                .map((s) => s.charAt(0).toUpperCase() + s.slice(1))
+                .join(" ")
+                + ": " + product[key]
+            : key.charAt(0).toUpperCase() + key.slice(1) + ": " + product[key]}
+      </p>
+      )))}
+
+      <Link
+        className="btn btn-primary details__row" 
+        to='/'>Go back</Link>
+    </section>
   );
 }

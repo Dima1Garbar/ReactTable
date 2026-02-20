@@ -1,0 +1,262 @@
+.content{
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.table{
+    min-width: 80%;
+    width: 100%;
+    max-width: 80%;
+    min-height: 100vh;
+    overflow-x: auto;
+    border: 1px solid rgb(207, 207, 207);
+    border-radius: 2px;
+}
+
+.table-head{
+    width: 100%;
+}
+
+.table-box{
+    border-collapse: unset;
+    padding: 5px;
+    height: 100%;
+    width: 100%;
+    width: max-content;
+}
+
+.table-column{
+    text-align: center;
+    padding: 15px 0;
+    width: 200px;
+    position: relative;
+    z-index: 0;
+}
+
+.table-dropdown-menu__checkbox{
+    margin: 2px;
+}
+
+.table-body__components{
+    text-align: center;
+    padding: 35px 0;
+    font-size: 20px;
+}
+
+.pagination{
+    width: 100%;
+    justify-content: center;
+    display: flex;
+    gap: 15px;
+}
+
+.page-link{
+    border-radius: 10px;
+}
+
+.pagination-pages{
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+}
+
+.btn-primary:hover{
+    background-color: white;
+    color: black;
+}
+
+.pagination-dropdown{
+    font-size: 20px;
+    display: flex;
+    gap: 15px;
+}
+
+.filters{
+    width: 80%;
+    display: flex;
+    justify-content: space-around;
+    margin: 20px 0;
+}
+
+.filter-input{
+    padding: 5px;
+    border-radius: 10px;
+}
+.table-checkbox__sticky {
+    position: sticky;
+    left: 0;
+    background: white;
+    z-index: 3;
+     will-change: left;
+}
+.table-checkbox__stickyOff{
+    position: static;
+}
+
+.dropdown-menu{
+    overflow: visible;
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9999;
+}
+
+.table-body{
+    height: 100%;
+}
+
+.table-body__row{
+    cursor: pointer;
+}
+
+.table-body__row:hover{
+    background-color: #f0f8ff;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2); 
+}
+
+.filers__dropdownbox{
+    position: relative;
+}
+
+.details{
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+}
+
+.details-title{
+    margin-bottom: 20px;
+    font-size: 50px;
+}
+
+.details__row{
+    font-size: 24px;
+}
+
+.notFound{
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    align-items: center;
+}
+
+.notFound-title{
+  font-size: 15vw;
+}
+
+.notFound-underTitle{
+    font-size: 5vw;
+}
+
+.notFound-button{
+    font-size: 50px;
+    border-radius: 30px;
+}
+
+.content-head{
+    margin-top: 10px;
+}
+
+.table-emptycolumn{
+    width: 50px;
+    text-align: center;
+}
+
+@media (max-width: 1450px){
+    .filters{
+        justify-content: center;
+        gap: 20px;
+        flex-wrap: wrap;
+    }
+    .filers__dropdownbox{
+        order: 6    ;
+    }
+}
+
+@media (max-width: 1000px){
+    .table-column{
+        width: 150px;
+    }
+
+    .table-body__components {
+        padding: 25px 0;
+        font-size: 16px;
+    }
+    .notFound-button{
+        font-size: 35px;
+    }
+}
+
+@media (max-width:800px) {
+    .table-column{
+        width: 100px;
+    }
+
+    .table-body__components {
+        padding: 10px 0;
+        font-size: 12px;
+        height: 50px;
+    }
+
+    .table-column__button{
+        font-size: 14px;
+    }
+    .notFound-button{
+        font-size: 15px;
+    }
+}
+
+@media (max-width: 550px) {
+    .table-column{
+        width: 80px;
+    }
+    .table-column__button{
+        font-size: 12x;
+    }
+    .table-body__components {
+        font-size: 10px;
+    }
+    .pagination{
+        flex-wrap: wrap;
+        padding: 0 20px;
+    }
+    .details-title{
+        font-size: 35px;
+    }
+    .details__row{
+        font-size: 20px;
+    }
+    .notFound-button{
+        font-size: 10px;
+    }
+}
+
+@media (max-width: 400px) {
+   .table-emptycolumn{
+        width: 25px;
+   }
+   .table-column__button{
+        font-size: 10px;
+   }
+   .table-column{
+        padding: 10px 0;
+   }
+   .filter-input{
+        width: 150px;
+        font-size: 15px;
+    }
+    .filers__dropdownbox{   
+    }
+
+}
